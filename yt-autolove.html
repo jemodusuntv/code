@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YT Auto-Love Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #ff2d55;
+      --red-dim: #ff2d5522;
+      --red-mid: #ff2d5544;
+      --bg: #0a0a0f;
+      --bg2: #111118;
+      --bg3: #1a1a24;
+      --border: #ffffff10;
+      --border2: #ffffff20;
+      --text: #f0f0f5;
+      --text-dim: #8888aa;
+      --mono: 'Space Mono', monospace;
+      --sans: 'Sora', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ff2d5515 0%, transparent 70%);
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--red-dim);
+      border: 1px solid var(--red-mid);
+      color: var(--red);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+
+    .badge::before { content: '♥'; }
+
+    h1 {
+      font-size: clamp(32px, 6vw, 52px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    h1 span { color: var(--red); }
+
+    .subtitle {
+      color: var(--text-dim);
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* Card */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--red-mid), transparent);
+    }
+
+    .card-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--red);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--red);
+    }
+
+    /* Sliders */
+    .setting {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 16px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .setting:last-child { margin-bottom: 0; }
+
+    .setting-label {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-weight: 400;
+    }
+
+    .setting-value {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      text-align: right;
+      min-width: 70px;
+    }
+
+    .setting input[type=range] {
+      grid-column: 1 / -1;
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 3px;
+      background: var(--bg3);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .setting input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 8px var(--red-mid);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .setting input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 16px var(--red);
+    }
+
+    .setting input[type=range]::-webkit-slider-runnable-track {
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    /* Code area */
+    .code-wrap {
+      position: relative;
+    }
+
+    .code-box {
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #8888aa;
+      line-height: 1.8;
+      white-space: pre;
+      overflow-x: auto;
+      max-height: 320px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+
+    .code-box::-webkit-scrollbar { width: 4px; height: 4px; }
+    .code-box::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #ff4d6e;
+      box-shadow: 0 0 24px var(--red-mid);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border2);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--red-mid);
+      color: var(--text);
+    }
+
+    .copy-success {
+      display: none;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--red);
+      align-items: center;
+      gap: 6px;
+      padding: 10px 0;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .copy-success.show { display: inline-flex; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+    /* Steps */
+    .steps { display: flex; flex-direction: column; gap: 16px; }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--red-mid);
+      background: var(--red-dim);
+      color: var(--red);
+      font-family: var(--mono);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-text {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.7;
+      padding-top: 4px;
+    }
+
+    .step-text strong { color: var(--text); font-weight: 600; }
+    .step-text code {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: var(--red);
+    }
+
+    /* Warning */
+    .warning {
+      background: #ff9f0a11;
+      border: 1px solid #ff9f0a33;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #ff9f0a;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      line-height: 1.6;
+    }
+
+    .warning::before { content: '⚠'; flex-shrink: 0; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--border2);
+      letter-spacing: 0.1em;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border2), transparent);
+      margin: 4px 0 24px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .container { padding: 32px 16px 60px; }
+      .card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow"></div>
+
+  <div class="container">
+    <header>
+      <div class="badge">YT AUTO-LOVE GENERATOR</div>
+      <h1>Auto <span>Love</span><br>YouTube Comments</h1>
+      <p class="subtitle">Generate script untuk Console Chrome — love semua komentar<br>secara otomatis dengan interval waktu random.</p>
+    </header>
+
+    <!-- Settings -->
+    <div class="card">
+      <div class="card-title">Pengaturan Script</div>
+
+      <div class="setting">
+        <span class="setting-label">Min delay antar love</span>
+        <span class="setting-value" id="dmin-val">1000 ms</span>
+        <input type="range" id="dmin" min="500" max="4000" step="100" value="1000">
+      </div>
+
+      <div class="setting">
+        <span class="setting-label">Max delay antar love</span>
+        <span class="setting-value" id="dmax-val">3000 ms</span>
+        <input type="range" id="dmax" min="1000" max="8000" step="100" value="3000">
+      </div>
+
+      <div class="setting">
+        <span class="setting-label">Scroll per cycle</span>
+        <span class="setting-value" id="scrollpx-val">1000 px</span>
+        <input type="range" id="scrollpx" min="300" max="3000" step="100" value="1000">
+      </div>
+
+      <div class="setting">
+        <span class="setting-label">Tunggu setelah scroll</span>
+        <span class="setting-value" id="scrollwait-val">2000 ms</span>
+        <input type="range" id="scrollwait" min="500" max="5000" step="100" value="2000">
+      </div>
+
+      <div class="setting">
+        <span class="setting-label">Stop jika kosong N kali</span>
+        <span class="setting-value" id="maxempty-val">5 kali</span>
+        <input type="range" id="maxempty" min="2" max="15" step="1" value="5">
+      </div>
+    </div>
+
+    <!-- Code output -->
+    <div class="card">
+      <div class="card-title">Script Console Chrome</div>
+      <div class="code-wrap">
+        <div class="code-box" id="code-box"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="copyCode()">♥ Copy Script</button>
+        <span class="copy-success" id="copy-ok">✓ Tersalin ke clipboard!</span>
+      </div>
+    </div>
+
+    <!-- How to use -->
+    <div class="card">
+      <div class="card-title">Cara Pakai</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">Buka video YouTube kamu, lalu <strong>scroll ke bagian komentar</strong> sampai beberapa komentar muncul di layar.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">Tekan <strong>F12</strong> di keyboard untuk buka DevTools, lalu pilih tab <strong>Console</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">Klik tombol <strong>♥ Copy Script</strong> di atas, paste di Console, lalu tekan <strong>Enter</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">Script otomatis scroll, hitung tombol heart, lalu love satu per satu. Progress tampil di <strong>panel pojok kiri bawah</strong> layar YouTube dan di Console.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-text">Untuk <strong>stop</strong>: klik area Console lalu tekan <code>Enter</code>. Script berhenti dan panel hilang otomatis.</div>
+        </div>
+      </div>
+
+      <div class="divider" style="margin-top:24px;"></div>
+
+      <div class="warning">
+        Jika Chrome menampilkan peringatan saat paste, ketik <strong>&nbsp;allow pasting&nbsp;</strong> di Console lalu tekan Enter dulu, kemudian baru paste script-nya.
+      </div>
+    </div>
+
+    <footer>YT AUTO-LOVE &nbsp;·&nbsp; PASTE IN CHROME CONSOLE &nbsp;·&nbsp; PRESS ENTER TO STOP</footer>
+  </div>
+
+  <script>
+    const inputs = {
+      dmin: document.getElementById('dmin'),
+      dmax: document.getElementById('dmax'),
+      scrollpx: document.getElementById('scrollpx'),
+      scrollwait: document.getElementById('scrollwait'),
+      maxempty: document.getElementById('maxempty'),
+    };
+
+    const labels = {
+      dmin: { el: document.getElementById('dmin-val'), suffix: ' ms' },
+      dmax: { el: document.getElementById('dmax-val'), suffix: ' ms' },
+      scrollpx: { el: document.getElementById('scrollpx-val'), suffix: ' px' },
+      scrollwait: { el: document.getElementById('scrollwait-val'), suffix: ' ms' },
+      maxempty: { el: document.getElementById('maxempty-val'), suffix: ' kali' },
+    };
+
+    function buildCode() {
+      const dmin = parseInt(inputs.dmin.value);
+      const dmax = parseInt(inputs.dmax.value);
+      const scrollpx = parseInt(inputs.scrollpx.value);
+      const scrollwait = parseInt(inputs.scrollwait.value);
+      const maxempty = parseInt(inputs.maxempty.value);
+
+      const code = `// ===== YouTube Auto-Love v8 =====
+(function () {
+  var DMIN = ${dmin};
+  var DMAX = ${dmax};
+  var SCROLL_PX = ${scrollpx};
+  var SCROLL_WAIT = ${scrollwait};
+  var MAX_EMPTY = ${maxempty};
+  var stopped = false;
+  var totalLoved = 0;
+  var emptyCount = 0;
+
+  var panel = document.createElement('div');
+  panel.style.cssText =
+    'position:fixed;bottom:20px;left:20px;background:#212121;color:#fff;' +
+    'padding:12px 20px;border-radius:12px;font:13px/1.6 sans-serif;' +
+    'z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,.5);min-width:260px;';
+  var titleEl = document.createElement('b');
+  titleEl.textContent = 'YT Auto-Love';
+  var br1 = document.createElement('br');
+  var statusEl = document.createElement('span');
+  statusEl.textContent = 'Memulai...';
+  var br2 = document.createElement('br');
+  var hintEl = document.createElement('small');
+  hintEl.style.cssText = 'opacity:0.5;font-size:11px;';
+  hintEl.textContent = 'Tekan Enter di Console untuk stop';
+  panel.appendChild(titleEl);
+  panel.appendChild(br1);
+  panel.appendChild(statusEl);
+  panel.appendChild(br2);
+  panel.appendChild(hintEl);
+  document.body.appendChild(panel);
+
+  function setStatus(msg) {
+    statusEl.textContent = msg;
+    console.log('[YT Auto-Love] ' + msg);
+  }
+
+  function randomDelay(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function onEnter(e) {
+    if (e.key === 'Enter') {
+      stopped = true;
+      document.removeEventListener('keydown', onEnter, true);
+    }
+  }
+  document.addEventListener('keydown', onEnter, true);
+
+  function deepQuery(root, selector) {
+    var results = [];
+    root.querySelectorAll('*').forEach(function (el) {
+      if (el.shadowRoot) {
+        deepQuery(el.shadowRoot, selector).forEach(function (r) {
+          results.push(r);
+        });
+      }
+    });
+    root.querySelectorAll(selector).forEach(function (el) {
+      results.push(el);
+    });
+    return results;
+  }
+
+  function getUnlovedBtns() {
+    var allBtns = deepQuery(document, 'button');
+    return allBtns.filter(function (b) {
+      return b.getAttribute('aria-label') === 'Heart';
+    });
+  }
+
+  function loveBatch(btns, idx, onDone) {
+    if (stopped) { onDone(); return; }
+    if (idx >= btns.length) { onDone(); return; }
+
+    var btn = btns[idx];
+    if (btn.getAttribute('aria-label') !== 'Heart') {
+      loveBatch(btns, idx + 1, onDone);
+      return;
+    }
+
+    btn.click();
+    totalLoved++;
+    setStatus('Love ke-' + totalLoved + ' \u2705 (' + (idx + 1) + '/' + btns.length + ' batch)');
+    console.log('[YT Auto-Love] Berhasil love ke-' + totalLoved);
+
+    var delay = randomDelay(DMIN, DMAX);
+    console.log('[YT Auto-Love] Jeda ' + delay + 'ms...');
+    setTimeout(function () {
+      loveBatch(btns, idx + 1, onDone);
+    }, delay);
+  }
+
+  function cycle() {
+    if (stopped) {
+      setStatus('Dihentikan. Total di-love: ' + totalLoved);
+      setTimeout(function () { panel.remove(); }, 5000);
+      return;
+    }
+
+    window.scrollBy(0, SCROLL_PX);
+    setStatus('Scrolling... (total: ' + totalLoved + ' di-love)');
+
+    setTimeout(function () {
+      if (stopped) { cycle(); return; }
+
+      var btns = getUnlovedBtns();
+      console.log('[YT Auto-Love] Ditemukan ' + btns.length + ' belum di-love.');
+
+      if (btns.length === 0) {
+        emptyCount++;
+        console.log('[YT Auto-Love] Kosong ' + emptyCount + '/' + MAX_EMPTY + ' kali.');
+        setStatus('Cek ulang... (' + emptyCount + '/' + MAX_EMPTY + ') total: ' + totalLoved);
+        if (emptyCount >= MAX_EMPTY) {
+          setStatus('\uD83C\uDF89 Selesai! Total di-love: ' + totalLoved);
+          document.removeEventListener('keydown', onEnter, true);
+          setTimeout(function () { panel.remove(); }, 6000);
+          return;
+        }
+        cycle();
+        return;
+      }
+
+      emptyCount = 0;
+      setStatus('Ditemukan ' + btns.length + ' belum di-love, mulai...');
+
+      loveBatch(btns, 0, function () {
+        if (!stopped) cycle();
+        else {
+          setStatus('Dihentikan. Total di-love: ' + totalLoved);
+          setTimeout(function () { panel.remove(); }, 5000);
+        }
+      });
+
+    }, SCROLL_WAIT);
+  }
+
+  setStatus('Memulai...');
+  console.log('[YT Auto-Love] Dimulai. Tekan Enter di Console untuk stop.');
+  cycle();
+})();`;
+
+      document.getElementById('code-box').textContent = code;
+    }
+
+    // Event listeners
+    Object.keys(inputs).forEach(function(key) {
+      inputs[key].addEventListener('input', function() {
+        // Pastikan dmax >= dmin
+        if (key === 'dmin' && parseInt(inputs.dmax.value) < parseInt(this.value)) {
+          inputs.dmax.value = this.value;
+          labels.dmax.el.textContent = this.value + labels.dmax.suffix;
+        }
+        labels[key].el.textContent = this.value + labels[key].suffix;
+        buildCode();
+      });
+    });
+
+    function copyCode() {
+      var text = document.getElementById('code-box').textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        var ok = document.getElementById('copy-ok');
+        ok.classList.add('show');
+        setTimeout(function() { ok.classList.remove('show'); }, 3000);
+      });
+    }
+
+    buildCode();
+  </script>
+</body>
+</html>
