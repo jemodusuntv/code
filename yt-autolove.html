@@ -269,7 +269,7 @@
     <header>
       <div class="badge">YT AUTO-LOVE GENERATOR</div>
       <h1>Auto <span>Love</span><br>YouTube Comments</h1>
-      <p class="subtitle">Generate script untuk Console Chrome — love semua komentar<br>secara otomatis dengan interval waktu random.</p>
+      <p class="subtitle">Scroll full dulu sampai semua komentar terload,<br>baru love satu-satu dengan interval random.</p>
     </header>
 
     <div class="card">
@@ -285,19 +285,19 @@
         <input type="range" id="dmax" min="1000" max="8000" step="100" value="3000">
       </div>
       <div class="setting">
-        <span class="setting-label">Scroll per cycle</span>
-        <span class="setting-value" id="scrollpx-val">1000 px</span>
-        <input type="range" id="scrollpx" min="300" max="3000" step="100" value="1000">
+        <span class="setting-label">Kecepatan scroll awal</span>
+        <span class="setting-value" id="scrollpx-val">1500 px</span>
+        <input type="range" id="scrollpx" min="300" max="5000" step="100" value="1500">
       </div>
       <div class="setting">
-        <span class="setting-label">Tunggu setelah scroll</span>
-        <span class="setting-value" id="scrollwait-val">2000 ms</span>
-        <input type="range" id="scrollwait" min="500" max="5000" step="100" value="2000">
+        <span class="setting-label">Jeda scroll awal</span>
+        <span class="setting-value" id="scrollwait-val">1500 ms</span>
+        <input type="range" id="scrollwait" min="500" max="5000" step="100" value="1500">
       </div>
       <div class="setting">
-        <span class="setting-label">Stop jika mentok bawah N kali</span>
-        <span class="setting-value" id="maxempty-val">5 kali</span>
-        <input type="range" id="maxempty" min="3" max="20" step="1" value="5">
+        <span class="setting-label">Scroll per love (show progress)</span>
+        <span class="setting-value" id="lovescroll-val">400 px</span>
+        <input type="range" id="lovescroll" min="100" max="1000" step="50" value="400">
       </div>
     </div>
 
@@ -315,22 +315,26 @@
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
-          <div class="step-text">Buka video YouTube kamu, lalu <strong>scroll ke bagian komentar</strong> sampai beberapa komentar muncul di layar.</div>
+          <div class="step-text">Buka video YouTube kamu, lalu <strong>scroll ke bagian komentar</strong> sampai komentar pertama muncul.</div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
-          <div class="step-text">Tekan <strong>F12</strong> untuk buka DevTools, pilih tab <strong>Console</strong>.</div>
+          <div class="step-text">Tekan <strong>F12</strong> → tab <strong>Console</strong>.</div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
-          <div class="step-text">Klik <strong>♥ Copy Script</strong> di atas, paste di Console, lalu tekan <strong>Enter</strong>.</div>
+          <div class="step-text">Klik <strong>♥ Copy Script</strong>, paste di Console, tekan <strong>Enter</strong>.</div>
         </div>
         <div class="step">
           <div class="step-num">4</div>
-          <div class="step-text">Script scroll otomatis, cek tombol heart, love satu per satu hingga semua komentar habis. Progress tampil di <strong>panel pojok kiri bawah</strong> YouTube.</div>
+          <div class="step-text"><strong>Fase 1 — Loading:</strong> Script scroll cepat ke bawah sampai semua komentar terload. Panel menampilkan progress loading.</div>
         </div>
         <div class="step">
           <div class="step-num">5</div>
+          <div class="step-text"><strong>Fase 2 — Loving:</strong> Setelah semua terload, script kembali ke atas lalu love komentar satu per satu sambil scroll perlahan ke bawah.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
           <div class="step-text">Untuk <strong>stop manual</strong>: klik area Console lalu tekan <code>Enter</code>.</div>
         </div>
       </div>
@@ -339,7 +343,7 @@
       </div>
     </div>
 
-    <footer>YT AUTO-LOVE · PASTE IN CHROME CONSOLE · PRESS ENTER TO STOP</footer>
+    <footer>YT AUTO-LOVE v10 · SCROLL FULL FIRST · PRESS ENTER TO STOP</footer>
   </div>
 
   <script>
@@ -348,14 +352,14 @@
       dmax: document.getElementById('dmax'),
       scrollpx: document.getElementById('scrollpx'),
       scrollwait: document.getElementById('scrollwait'),
-      maxempty: document.getElementById('maxempty'),
+      lovescroll: document.getElementById('lovescroll'),
     };
     const labels = {
       dmin: { el: document.getElementById('dmin-val'), suffix: ' ms' },
       dmax: { el: document.getElementById('dmax-val'), suffix: ' ms' },
       scrollpx: { el: document.getElementById('scrollpx-val'), suffix: ' px' },
       scrollwait: { el: document.getElementById('scrollwait-val'), suffix: ' ms' },
-      maxempty: { el: document.getElementById('maxempty-val'), suffix: ' kali' },
+      lovescroll: { el: document.getElementById('lovescroll-val'), suffix: ' px' },
     };
 
     function buildCode() {
@@ -363,40 +367,52 @@
       const dmax = parseInt(inputs.dmax.value);
       const scrollpx = parseInt(inputs.scrollpx.value);
       const scrollwait = parseInt(inputs.scrollwait.value);
-      const maxempty = parseInt(inputs.maxempty.value);
+      const lovescroll = parseInt(inputs.lovescroll.value);
 
-      const code = `// ===== YouTube Auto-Love v9 =====
+      const code = `// ===== YouTube Auto-Love v10 =====
 (function () {
-  var DMIN = ${dmin};
-  var DMAX = ${dmax};
-  var SCROLL_PX = ${scrollpx};
-  var SCROLL_WAIT = ${scrollwait};
-  var MAX_STUCK = ${maxempty};
+  var DMIN = ${dmin};           // min delay antar love (ms)
+  var DMAX = ${dmax};           // max delay antar love (ms)
+  var SCROLL_PX = ${scrollpx};  // scroll saat loading fase awal
+  var SCROLL_WAIT = ${scrollwait}; // jeda setelah scroll loading
+  var LOVE_SCROLL = ${lovescroll}; // scroll tiap kali love (show progress)
   var stopped = false;
   var totalLoved = 0;
-  var stuckCount = 0;
 
+  // ---- Panel progress ----
   var panel = document.createElement('div');
   panel.style.cssText =
     'position:fixed;bottom:20px;left:20px;background:#212121;color:#fff;' +
-    'padding:12px 20px;border-radius:12px;font:13px/1.6 sans-serif;' +
-    'z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,.5);min-width:260px;';
+    'padding:12px 20px;border-radius:12px;font:13px/1.7 sans-serif;' +
+    'z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,.5);min-width:280px;';
+
   var titleEl = document.createElement('b');
   titleEl.textContent = 'YT Auto-Love';
   var br1 = document.createElement('br');
-  var statusEl = document.createElement('span');
-  statusEl.textContent = 'Memulai...';
+
+  var phaseEl = document.createElement('span');
+  phaseEl.style.cssText = 'font-size:11px;color:#aaa;';
+  phaseEl.textContent = 'Fase 1: Loading komentar...';
   var br2 = document.createElement('br');
+
+  var statusEl = document.createElement('span');
+  statusEl.textContent = 'Scroll ke bawah...';
+  var br3 = document.createElement('br');
+
   var hintEl = document.createElement('small');
-  hintEl.style.cssText = 'opacity:0.5;font-size:11px;';
+  hintEl.style.cssText = 'opacity:0.4;font-size:10px;';
   hintEl.textContent = 'Tekan Enter di Console untuk stop';
+
   panel.appendChild(titleEl);
   panel.appendChild(br1);
-  panel.appendChild(statusEl);
+  panel.appendChild(phaseEl);
   panel.appendChild(br2);
+  panel.appendChild(statusEl);
+  panel.appendChild(br3);
   panel.appendChild(hintEl);
   document.body.appendChild(panel);
 
+  function setPhase(p) { phaseEl.textContent = p; }
   function setStatus(msg) {
     statusEl.textContent = msg;
     console.log('[YT Auto-Love] ' + msg);
@@ -406,6 +422,7 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  // Stop saat Enter ditekan di Console
   function onEnter(e) {
     if (e.key === 'Enter') {
       stopped = true;
@@ -414,6 +431,7 @@
   }
   document.addEventListener('keydown', onEnter, true);
 
+  // Deep query menembus shadow DOM
   function deepQuery(root, selector) {
     var results = [];
     root.querySelectorAll('*').forEach(function (el) {
@@ -426,37 +444,21 @@
   }
 
   function getUnlovedBtns() {
-    var allBtns = deepQuery(document, 'button');
-    return allBtns.filter(function (b) {
+    return deepQuery(document, 'button').filter(function (b) {
       return b.getAttribute('aria-label') === 'Heart';
     });
   }
 
-  function loveBatch(btns, idx, onDone) {
-    if (stopped) { onDone(); return; }
-    if (idx >= btns.length) { onDone(); return; }
+  // =============================================
+  // FASE 1: Scroll full sampai mentok bawah
+  // =============================================
+  var stuckCount = 0;
+  var MAX_STUCK = 4; // berapa kali Y tidak berubah = anggap sudah mentok
 
-    var btn = btns[idx];
-    if (btn.getAttribute('aria-label') !== 'Heart') {
-      loveBatch(btns, idx + 1, onDone);
-      return;
-    }
-
-    btn.click();
-    totalLoved++;
-    stuckCount = 0; // ada aktivitas, reset stuck
-    setStatus('Love ke-' + totalLoved + ' \u2705 (' + (idx+1) + '/' + btns.length + ' batch)');
-    console.log('[YT Auto-Love] Berhasil love ke-' + totalLoved);
-
-    setTimeout(function () {
-      loveBatch(btns, idx + 1, onDone);
-    }, randomDelay(DMIN, DMAX));
-  }
-
-  function cycle() {
+  function scrollToBottom() {
     if (stopped) {
-      setStatus('Dihentikan. Total di-love: ' + totalLoved);
-      setTimeout(function () { panel.remove(); }, 5000);
+      setStatus('Dihentikan saat loading.');
+      setTimeout(function () { panel.remove(); }, 4000);
       return;
     }
 
@@ -464,53 +466,111 @@
     window.scrollBy(0, SCROLL_PX);
 
     setTimeout(function () {
-      if (stopped) { cycle(); return; }
-
       var afterY = window.scrollY;
+      setStatus('Loading... ScrollY: ' + Math.round(afterY) + 'px');
 
-      // Cek apakah scroll berhasil turun
       if (afterY === beforeY) {
         stuckCount++;
-        console.log('[YT Auto-Love] Mentok ' + stuckCount + '/' + MAX_STUCK);
-      }
-      // Jika scroll berhasil, JANGAN reset stuckCount di sini —
-      // biarkan loveBatch yang reset saat ada tombol diklik
-
-      var btns = getUnlovedBtns();
-      console.log('[YT Auto-Love] Ditemukan ' + btns.length + ' belum di-love.');
-
-      if (btns.length > 0) {
-        // Ada tombol — love dulu
-        setStatus('Ditemukan ' + btns.length + ' belum di-love, mulai...');
-        loveBatch(btns, 0, function () {
-          if (!stopped) cycle();
-          else {
-            setStatus('Dihentikan. Total di-love: ' + totalLoved);
-            setTimeout(function () { panel.remove(); }, 5000);
-          }
-        });
-        return;
+        console.log('[YT Auto-Love] Scroll mentok ' + stuckCount + '/' + MAX_STUCK);
+        if (stuckCount >= MAX_STUCK) {
+          // Sudah mentok — semua komentar terload
+          var total = getUnlovedBtns().length;
+          console.log('[YT Auto-Love] Semua komentar terload. Ditemukan ' + total + ' belum di-love.');
+          setPhase('Fase 2: Auto-Love dimulai');
+          setStatus('Ditemukan ' + total + ' komentar. Kembali ke atas...');
+          // Kembali ke atas dulu, lalu mulai love
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          setTimeout(startLoving, 2000);
+          return;
+        }
+      } else {
+        stuckCount = 0; // masih bisa scroll, reset
       }
 
-      // Tidak ada tombol
-      if (stuckCount >= MAX_STUCK) {
-        // Benar-benar mentok dan tidak ada tombol baru
-        setStatus('\uD83C\uDF89 Selesai! Total di-love: ' + totalLoved);
-        document.removeEventListener('keydown', onEnter, true);
-        setTimeout(function () { panel.remove(); }, 6000);
-        return;
-      }
-
-      // Masih ada kemungkinan komentar baru muncul, scroll lagi
-      setStatus('Scrolling... (total: ' + totalLoved + ' di-love)');
-      cycle();
-
+      scrollToBottom();
     }, SCROLL_WAIT);
   }
 
-  setStatus('Memulai...');
-  console.log('[YT Auto-Love] Dimulai. Tekan Enter di Console untuk stop.');
-  cycle();
+  // =============================================
+  // FASE 2: Love satu-satu sambil scroll
+  // =============================================
+  function startLoving() {
+    if (stopped) {
+      setStatus('Dihentikan. Total di-love: ' + totalLoved);
+      setTimeout(function () { panel.remove(); }, 5000);
+      return;
+    }
+
+    var btns = getUnlovedBtns();
+    var total = btns.length;
+
+    if (total === 0) {
+      setStatus('\uD83C\uDF89 Selesai! Total di-love: ' + totalLoved);
+      document.removeEventListener('keydown', onEnter, true);
+      setTimeout(function () { panel.remove(); }, 6000);
+      return;
+    }
+
+    console.log('[YT Auto-Love] Mulai love ' + total + ' komentar...');
+    loveOne(btns, 0, total);
+  }
+
+  function loveOne(btns, idx, total) {
+    if (stopped) {
+      setStatus('Dihentikan. Total di-love: ' + totalLoved);
+      setTimeout(function () { panel.remove(); }, 5000);
+      return;
+    }
+
+    if (idx >= btns.length) {
+      // Selesai batch — cek lagi kalau ada yang tertinggal
+      var remaining = getUnlovedBtns();
+      if (remaining.length === 0) {
+        setStatus('\uD83C\uDF89 Selesai! Total di-love: ' + totalLoved);
+        document.removeEventListener('keydown', onEnter, true);
+        setTimeout(function () { panel.remove(); }, 6000);
+      } else {
+        // Ada sisa (mungkin komentar yang tadi belum kena)
+        console.log('[YT Auto-Love] Sisa ' + remaining.length + ' komentar, lanjut...');
+        loveOne(remaining, 0, remaining.length);
+      }
+      return;
+    }
+
+    var btn = btns[idx];
+
+    // Skip jika sudah di-love
+    if (btn.getAttribute('aria-label') !== 'Heart') {
+      loveOne(btns, idx + 1, total);
+      return;
+    }
+
+    // Scroll ke posisi tombol supaya keliatan diklik
+    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    setTimeout(function () {
+      if (stopped) { loveOne(btns, btns.length, total); return; }
+
+      btn.click();
+      totalLoved++;
+      setStatus('Love ke-' + totalLoved + ' \u2705 (' + (idx + 1) + '/' + total + ')');
+      console.log('[YT Auto-Love] Berhasil love ke-' + totalLoved + ' dari ' + total);
+
+      // Scroll sedikit ke bawah biar keliatan prosesnya
+      window.scrollBy(0, LOVE_SCROLL);
+
+      var delay = randomDelay(DMIN, DMAX);
+      console.log('[YT Auto-Love] Jeda ' + delay + 'ms...');
+      setTimeout(function () {
+        loveOne(btns, idx + 1, total);
+      }, delay);
+    }, 400); // jeda kecil setelah scrollIntoView
+  }
+
+  // ---- Mulai ----
+  setStatus('Scroll ke bawah untuk load semua komentar...');
+  console.log('[YT Auto-Love] Fase 1: Loading semua komentar...');
+  scrollToBottom();
 })();`;
 
       document.getElementById('code-box').textContent = code;
