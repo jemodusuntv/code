@@ -31,7 +31,6 @@
       overflow-x: hidden;
     }
 
-    /* Background grid */
     body::before {
       content: '';
       position: fixed;
@@ -46,12 +45,10 @@
 
     .glow {
       position: fixed;
-      width: 600px;
-      height: 600px;
+      width: 600px; height: 600px;
       border-radius: 50%;
       background: radial-gradient(circle, #ff2d5515 0%, transparent 70%);
-      top: -200px;
-      left: 50%;
+      top: -200px; left: 50%;
       transform: translateX(-50%);
       pointer-events: none;
       z-index: 0;
@@ -65,11 +62,7 @@
       z-index: 1;
     }
 
-    /* Header */
-    header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
+    header { text-align: center; margin-bottom: 48px; }
 
     .badge {
       display: inline-flex;
@@ -85,7 +78,6 @@
       letter-spacing: 0.1em;
       margin-bottom: 20px;
     }
-
     .badge::before { content: '♥'; }
 
     h1 {
@@ -95,17 +87,10 @@
       letter-spacing: -0.02em;
       margin-bottom: 12px;
     }
-
     h1 span { color: var(--red); }
 
-    .subtitle {
-      color: var(--text-dim);
-      font-size: 15px;
-      font-weight: 300;
-      line-height: 1.6;
-    }
+    .subtitle { color: var(--text-dim); font-size: 15px; font-weight: 300; line-height: 1.6; }
 
-    /* Card */
     .card {
       background: var(--bg2);
       border: 1px solid var(--border2);
@@ -115,7 +100,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .card::before {
       content: '';
       position: absolute;
@@ -135,15 +119,8 @@
       align-items: center;
       gap: 8px;
     }
+    .card-title::before { content: ''; width: 20px; height: 1px; background: var(--red); }
 
-    .card-title::before {
-      content: '';
-      width: 20px;
-      height: 1px;
-      background: var(--red);
-    }
-
-    /* Sliders */
     .setting {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -151,22 +128,9 @@
       align-items: center;
       margin-bottom: 20px;
     }
-
     .setting:last-child { margin-bottom: 0; }
-
-    .setting-label {
-      font-size: 13px;
-      color: var(--text-dim);
-      font-weight: 400;
-    }
-
-    .setting-value {
-      font-family: var(--mono);
-      font-size: 13px;
-      color: var(--text);
-      text-align: right;
-      min-width: 70px;
-    }
+    .setting-label { font-size: 13px; color: var(--text-dim); }
+    .setting-value { font-family: var(--mono); font-size: 13px; color: var(--text); text-align: right; min-width: 70px; }
 
     .setting input[type=range] {
       grid-column: 1 / -1;
@@ -179,11 +143,9 @@
       outline: none;
       cursor: pointer;
     }
-
     .setting input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
+      width: 16px; height: 16px;
       border-radius: 50%;
       background: var(--red);
       border: 2px solid var(--bg);
@@ -191,20 +153,9 @@
       cursor: pointer;
       transition: transform 0.15s, box-shadow 0.15s;
     }
-
     .setting input[type=range]::-webkit-slider-thumb:hover {
       transform: scale(1.2);
       box-shadow: 0 0 16px var(--red);
-    }
-
-    .setting input[type=range]::-webkit-slider-runnable-track {
-      height: 3px;
-      border-radius: 2px;
-    }
-
-    /* Code area */
-    .code-wrap {
-      position: relative;
     }
 
     .code-box {
@@ -223,17 +174,10 @@
       scrollbar-width: thin;
       scrollbar-color: var(--border2) transparent;
     }
-
     .code-box::-webkit-scrollbar { width: 4px; height: 4px; }
     .code-box::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
-    /* Buttons */
-    .btn-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
+    .btn-row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; align-items: center; }
 
     .btn {
       display: inline-flex;
@@ -249,29 +193,11 @@
       border: none;
       transition: all 0.2s;
     }
-
-    .btn-primary {
-      background: var(--red);
-      color: #fff;
-    }
-
+    .btn-primary { background: var(--red); color: #fff; }
     .btn-primary:hover {
       background: #ff4d6e;
       box-shadow: 0 0 24px var(--red-mid);
       transform: translateY(-1px);
-    }
-
-    .btn-primary:active { transform: translateY(0); }
-
-    .btn-secondary {
-      background: transparent;
-      color: var(--text-dim);
-      border: 1px solid var(--border2);
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--red-mid);
-      color: var(--text);
     }
 
     .copy-success {
@@ -281,58 +207,32 @@
       color: var(--red);
       align-items: center;
       gap: 6px;
-      padding: 10px 0;
       animation: fadeIn 0.3s ease;
     }
-
     .copy-success.show { display: inline-flex; }
-
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-    /* Steps */
     .steps { display: flex; flex-direction: column; gap: 16px; }
-
-    .step {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-
+    .step { display: flex; gap: 16px; align-items: flex-start; }
     .step-num {
-      width: 28px;
-      height: 28px;
+      width: 28px; height: 28px;
       border-radius: 50%;
       border: 1px solid var(--red-mid);
       background: var(--red-dim);
       color: var(--red);
       font-family: var(--mono);
       font-size: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
     }
-
-    .step-text {
-      font-size: 14px;
-      color: var(--text-dim);
-      line-height: 1.7;
-      padding-top: 4px;
-    }
-
+    .step-text { font-size: 14px; color: var(--text-dim); line-height: 1.7; padding-top: 4px; }
     .step-text strong { color: var(--text); font-weight: 600; }
     .step-text code {
-      font-family: var(--mono);
-      font-size: 11px;
-      background: var(--bg3);
-      border: 1px solid var(--border2);
-      padding: 2px 8px;
-      border-radius: 4px;
-      color: var(--red);
+      font-family: var(--mono); font-size: 11px;
+      background: var(--bg3); border: 1px solid var(--border2);
+      padding: 2px 8px; border-radius: 4px; color: var(--red);
     }
 
-    /* Warning */
     .warning {
       background: #ff9f0a11;
       border: 1px solid #ff9f0a33;
@@ -344,11 +244,10 @@
       gap: 10px;
       align-items: flex-start;
       line-height: 1.6;
+      margin-top: 20px;
     }
-
     .warning::before { content: '⚠'; flex-shrink: 0; }
 
-    /* Footer */
     footer {
       text-align: center;
       margin-top: 48px;
@@ -358,14 +257,6 @@
       letter-spacing: 0.1em;
     }
 
-    /* Divider */
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border2), transparent);
-      margin: 4px 0 24px;
-    }
-
-    /* Responsive */
     @media (max-width: 480px) {
       .container { padding: 32px 16px 60px; }
       .card { padding: 20px; }
@@ -374,7 +265,6 @@
 </head>
 <body>
   <div class="glow"></div>
-
   <div class="container">
     <header>
       <div class="badge">YT AUTO-LOVE GENERATOR</div>
@@ -382,54 +272,44 @@
       <p class="subtitle">Generate script untuk Console Chrome — love semua komentar<br>secara otomatis dengan interval waktu random.</p>
     </header>
 
-    <!-- Settings -->
     <div class="card">
       <div class="card-title">Pengaturan Script</div>
-
       <div class="setting">
         <span class="setting-label">Min delay antar love</span>
         <span class="setting-value" id="dmin-val">1000 ms</span>
         <input type="range" id="dmin" min="500" max="4000" step="100" value="1000">
       </div>
-
       <div class="setting">
         <span class="setting-label">Max delay antar love</span>
         <span class="setting-value" id="dmax-val">3000 ms</span>
         <input type="range" id="dmax" min="1000" max="8000" step="100" value="3000">
       </div>
-
       <div class="setting">
         <span class="setting-label">Scroll per cycle</span>
         <span class="setting-value" id="scrollpx-val">1000 px</span>
         <input type="range" id="scrollpx" min="300" max="3000" step="100" value="1000">
       </div>
-
       <div class="setting">
         <span class="setting-label">Tunggu setelah scroll</span>
         <span class="setting-value" id="scrollwait-val">2000 ms</span>
         <input type="range" id="scrollwait" min="500" max="5000" step="100" value="2000">
       </div>
-
       <div class="setting">
-        <span class="setting-label">Stop jika kosong N kali</span>
+        <span class="setting-label">Stop jika mentok bawah N kali</span>
         <span class="setting-value" id="maxempty-val">5 kali</span>
-        <input type="range" id="maxempty" min="2" max="15" step="1" value="5">
+        <input type="range" id="maxempty" min="3" max="20" step="1" value="5">
       </div>
     </div>
 
-    <!-- Code output -->
     <div class="card">
       <div class="card-title">Script Console Chrome</div>
-      <div class="code-wrap">
-        <div class="code-box" id="code-box"></div>
-      </div>
+      <div class="code-box" id="code-box"></div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="copyCode()">♥ Copy Script</button>
         <span class="copy-success" id="copy-ok">✓ Tersalin ke clipboard!</span>
       </div>
     </div>
 
-    <!-- How to use -->
     <div class="card">
       <div class="card-title">Cara Pakai</div>
       <div class="steps">
@@ -439,30 +319,27 @@
         </div>
         <div class="step">
           <div class="step-num">2</div>
-          <div class="step-text">Tekan <strong>F12</strong> di keyboard untuk buka DevTools, lalu pilih tab <strong>Console</strong>.</div>
+          <div class="step-text">Tekan <strong>F12</strong> untuk buka DevTools, pilih tab <strong>Console</strong>.</div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
-          <div class="step-text">Klik tombol <strong>♥ Copy Script</strong> di atas, paste di Console, lalu tekan <strong>Enter</strong>.</div>
+          <div class="step-text">Klik <strong>♥ Copy Script</strong> di atas, paste di Console, lalu tekan <strong>Enter</strong>.</div>
         </div>
         <div class="step">
           <div class="step-num">4</div>
-          <div class="step-text">Script otomatis scroll, hitung tombol heart, lalu love satu per satu. Progress tampil di <strong>panel pojok kiri bawah</strong> layar YouTube dan di Console.</div>
+          <div class="step-text">Script scroll otomatis, cek tombol heart, love satu per satu hingga semua komentar habis. Progress tampil di <strong>panel pojok kiri bawah</strong> YouTube.</div>
         </div>
         <div class="step">
           <div class="step-num">5</div>
-          <div class="step-text">Untuk <strong>stop</strong>: klik area Console lalu tekan <code>Enter</code>. Script berhenti dan panel hilang otomatis.</div>
+          <div class="step-text">Untuk <strong>stop manual</strong>: klik area Console lalu tekan <code>Enter</code>.</div>
         </div>
       </div>
-
-      <div class="divider" style="margin-top:24px;"></div>
-
       <div class="warning">
-        Jika Chrome menampilkan peringatan saat paste, ketik <strong>&nbsp;allow pasting&nbsp;</strong> di Console lalu tekan Enter dulu, kemudian baru paste script-nya.
+        Jika Chrome menampilkan peringatan saat paste, ketik <strong>&nbsp;allow pasting&nbsp;</strong> di Console lalu Enter dulu, kemudian baru paste script-nya.
       </div>
     </div>
 
-    <footer>YT AUTO-LOVE &nbsp;·&nbsp; PASTE IN CHROME CONSOLE &nbsp;·&nbsp; PRESS ENTER TO STOP</footer>
+    <footer>YT AUTO-LOVE · PASTE IN CHROME CONSOLE · PRESS ENTER TO STOP</footer>
   </div>
 
   <script>
@@ -473,7 +350,6 @@
       scrollwait: document.getElementById('scrollwait'),
       maxempty: document.getElementById('maxempty'),
     };
-
     const labels = {
       dmin: { el: document.getElementById('dmin-val'), suffix: ' ms' },
       dmax: { el: document.getElementById('dmax-val'), suffix: ' ms' },
@@ -489,16 +365,16 @@
       const scrollwait = parseInt(inputs.scrollwait.value);
       const maxempty = parseInt(inputs.maxempty.value);
 
-      const code = `// ===== YouTube Auto-Love v8 =====
+      const code = `// ===== YouTube Auto-Love v9 =====
 (function () {
   var DMIN = ${dmin};
   var DMAX = ${dmax};
   var SCROLL_PX = ${scrollpx};
   var SCROLL_WAIT = ${scrollwait};
-  var MAX_EMPTY = ${maxempty};
+  var MAX_STUCK = ${maxempty};
   var stopped = false;
   var totalLoved = 0;
-  var emptyCount = 0;
+  var stuckCount = 0;
 
   var panel = document.createElement('div');
   panel.style.cssText =
@@ -542,14 +418,10 @@
     var results = [];
     root.querySelectorAll('*').forEach(function (el) {
       if (el.shadowRoot) {
-        deepQuery(el.shadowRoot, selector).forEach(function (r) {
-          results.push(r);
-        });
+        deepQuery(el.shadowRoot, selector).forEach(function (r) { results.push(r); });
       }
     });
-    root.querySelectorAll(selector).forEach(function (el) {
-      results.push(el);
-    });
+    root.querySelectorAll(selector).forEach(function (el) { results.push(el); });
     return results;
   }
 
@@ -572,14 +444,13 @@
 
     btn.click();
     totalLoved++;
-    setStatus('Love ke-' + totalLoved + ' \u2705 (' + (idx + 1) + '/' + btns.length + ' batch)');
+    stuckCount = 0; // ada aktivitas, reset stuck
+    setStatus('Love ke-' + totalLoved + ' \u2705 (' + (idx+1) + '/' + btns.length + ' batch)');
     console.log('[YT Auto-Love] Berhasil love ke-' + totalLoved);
 
-    var delay = randomDelay(DMIN, DMAX);
-    console.log('[YT Auto-Love] Jeda ' + delay + 'ms...');
     setTimeout(function () {
       loveBatch(btns, idx + 1, onDone);
-    }, delay);
+    }, randomDelay(DMIN, DMAX));
   }
 
   function cycle() {
@@ -589,39 +460,50 @@
       return;
     }
 
+    var beforeY = window.scrollY;
     window.scrollBy(0, SCROLL_PX);
-    setStatus('Scrolling... (total: ' + totalLoved + ' di-love)');
 
     setTimeout(function () {
       if (stopped) { cycle(); return; }
 
+      var afterY = window.scrollY;
+
+      // Cek apakah scroll berhasil turun
+      if (afterY === beforeY) {
+        stuckCount++;
+        console.log('[YT Auto-Love] Mentok ' + stuckCount + '/' + MAX_STUCK);
+      }
+      // Jika scroll berhasil, JANGAN reset stuckCount di sini —
+      // biarkan loveBatch yang reset saat ada tombol diklik
+
       var btns = getUnlovedBtns();
       console.log('[YT Auto-Love] Ditemukan ' + btns.length + ' belum di-love.');
 
-      if (btns.length === 0) {
-        emptyCount++;
-        console.log('[YT Auto-Love] Kosong ' + emptyCount + '/' + MAX_EMPTY + ' kali.');
-        setStatus('Cek ulang... (' + emptyCount + '/' + MAX_EMPTY + ') total: ' + totalLoved);
-        if (emptyCount >= MAX_EMPTY) {
-          setStatus('\uD83C\uDF89 Selesai! Total di-love: ' + totalLoved);
-          document.removeEventListener('keydown', onEnter, true);
-          setTimeout(function () { panel.remove(); }, 6000);
-          return;
-        }
-        cycle();
+      if (btns.length > 0) {
+        // Ada tombol — love dulu
+        setStatus('Ditemukan ' + btns.length + ' belum di-love, mulai...');
+        loveBatch(btns, 0, function () {
+          if (!stopped) cycle();
+          else {
+            setStatus('Dihentikan. Total di-love: ' + totalLoved);
+            setTimeout(function () { panel.remove(); }, 5000);
+          }
+        });
         return;
       }
 
-      emptyCount = 0;
-      setStatus('Ditemukan ' + btns.length + ' belum di-love, mulai...');
+      // Tidak ada tombol
+      if (stuckCount >= MAX_STUCK) {
+        // Benar-benar mentok dan tidak ada tombol baru
+        setStatus('\uD83C\uDF89 Selesai! Total di-love: ' + totalLoved);
+        document.removeEventListener('keydown', onEnter, true);
+        setTimeout(function () { panel.remove(); }, 6000);
+        return;
+      }
 
-      loveBatch(btns, 0, function () {
-        if (!stopped) cycle();
-        else {
-          setStatus('Dihentikan. Total di-love: ' + totalLoved);
-          setTimeout(function () { panel.remove(); }, 5000);
-        }
-      });
+      // Masih ada kemungkinan komentar baru muncul, scroll lagi
+      setStatus('Scrolling... (total: ' + totalLoved + ' di-love)');
+      cycle();
 
     }, SCROLL_WAIT);
   }
@@ -634,10 +516,8 @@
       document.getElementById('code-box').textContent = code;
     }
 
-    // Event listeners
     Object.keys(inputs).forEach(function(key) {
       inputs[key].addEventListener('input', function() {
-        // Pastikan dmax >= dmin
         if (key === 'dmin' && parseInt(inputs.dmax.value) < parseInt(this.value)) {
           inputs.dmax.value = this.value;
           labels.dmax.el.textContent = this.value + labels.dmax.suffix;
@@ -648,8 +528,7 @@
     });
 
     function copyCode() {
-      var text = document.getElementById('code-box').textContent;
-      navigator.clipboard.writeText(text).then(function() {
+      navigator.clipboard.writeText(document.getElementById('code-box').textContent).then(function() {
         var ok = document.getElementById('copy-ok');
         ok.classList.add('show');
         setTimeout(function() { ok.classList.remove('show'); }, 3000);
